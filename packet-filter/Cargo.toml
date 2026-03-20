@@ -1,0 +1,15 @@
+[package]
+name = "packet-filter"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+pcap = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+chrono = "0.4"
+tokio = { version = "1", features = ["full"] }
+libc = "0.2"
+ratatui = "0.29"
+crossterm = "0.28"
+ipnetwork = { version = "0.20", features = ["serde"] }

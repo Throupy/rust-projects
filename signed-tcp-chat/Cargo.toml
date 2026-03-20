@@ -1,0 +1,19 @@
+[package]
+name = "signed-tcp-chat"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+hmac = "0.12"
+sha2 = "0.10"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+hex = "0.4"          # encode HMAC bytes as readable hex string
+clap = { version = "4.0", features = ["derive"] }  # CLI args
+thiserror = "1.0"    # ergonomic custom error types
+tracing = "0.1"      # structured logging (production standard)
+tracing-subscriber = "0.3"
+subtle = "2.0"
+ctrlc = "3.0"
+ratatui = "0.30"
+crossterm = "0.27"

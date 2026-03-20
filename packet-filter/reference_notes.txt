@@ -1,0 +1,20 @@
+& - borrow a reference (read-only)
+    Instead of passing a value (which moves/copies it), pass a POINTER to it.
+    The owner keeps the data, you just look at it
+
+&mut - mutable borrow
+    As above, but you can modify the data
+    Only one &mut borrow can exist at a time
+    Within a func, access a &mut param via *param
+
+* - dereference
+    Opposite of &. You have a refrence and you want the actual value
+
+    let x = 5;
+    let r = &x;   // r is a reference to x
+    println!("{}", *r);  // dereference to get 5
+
+Rule of thumb
+Passing something you want to keep → use &
+Passing something you want to modify → use &mut
+Got a reference but need the value → use *

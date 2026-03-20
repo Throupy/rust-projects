@@ -1,0 +1,46 @@
+# don't want to test on my interface as will lose inet access until sudo iptables -F
+# create a dummy interface using
+sudo ip link add dummy0 type dummy
+sudo ip link set dummy0 up
+sudo ip addr add 10.99.0.1/24 dev dummy0
+
+# target nfqueue only on that IF
+sudo iptables -A INPUT -i dummy0 -j NFQUEUE --queue-num 0 --queue-bypass
+sudo iptables -A OUTPUT -o dummy0 -j NFQUEUE --queue-num 0 -queue-bypass
+
+# get test traffic on dummy0
+# ping won't match to a proto (not supported yet)
+# curl to 10.99.0.1 - packets go out of dummy0, hit the NFQUEUE, get verdict from firewall
+# no eral responses expected (dummy0 has no connectivity) but packets should be intercepted
+curl --interface dummy0 http://10.99.0.1
+
+# == better test ==
+# start python http server on 80/tcp
+sudo python3 -m http.server 80
+# if in use, it's caddy (sudo systemctl stop caddy) in lab
+
+# verify it works b4 running firewall
+curl http://localhost
+
+# add iptables rules targeting loopback to go to queue for app digestion
+# covers 80/tcp, 5000/tcp, 8080/tcp on both directions
+sudo iptables -A OUTPUT -o lo -p tcp -m multiport --dports 80,5000,8080 -j NFQUEUE --queue-num 0 --queue-bypass
+sudo iptables -A INPUT -i lo -p tcp -m multiport --dports 80,5000,8080 -j NFQUEUE --queue-num 0 --queue-bypass
+
+# make sure rules r correct and then start firewall, then
+curl http://localhost
+# should hang / fail. packets r being dropped by firewall
+
+# clear rules
+sudo ip link delete dummy0
+sudo iptables -F
+
+# when testing prod (all interfaces), just change iptables
+# this will block actual traffic tho now
+# dummy0 only (safe, testing)
+sudo iptables -A INPUT -i dummy0 -j NFQUEUE --queue-num 0
+sudo iptables -A OUTPUT -o dummy0 -j NFQUEUE --queue-num 0
+
+# all interfaces (live)
+sudo iptables -A INPUT -j NFQUEUE --queue-num 0
+sudo iptables -A OUTPUT -j NFQUEUE --queue-num 0

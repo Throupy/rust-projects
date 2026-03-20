@@ -1,0 +1,39 @@
+{
+  "rules": [
+    {
+      "name": "Block Google DNS",
+      "src_ip": null,
+      "dst_ip": "8.8.8.8",
+      "dst_port": 53,
+      "protocol": "udp"
+    },
+    {
+        "name": "Block HTTPS",
+        "src_ip": null,
+        "dst_ip": null,
+        "dst_port": 443,
+        "protocol": "tcp"
+    },
+    {
+        "name": "Block TCP/5000",
+        "src_ip": null,
+        "dst_ip": null,
+        "dst_port": 5000,
+        "protocol": "tcp"
+    },
+    {
+        "name": "Block NETBIOS",
+        "src_ip": null,
+        "dst_ip": "10.99.0.0/24",
+        "dst_port": 138,
+        "protocol": "tcp"   
+    },
+    {
+        "name": "Block All Dummy Traffic outbound",
+        "src_ip": "10.99.0.0/24",
+        "dst_ip": null,
+        "dst_port": null,
+        "protocol": null   
+    }
+  ]
+}
